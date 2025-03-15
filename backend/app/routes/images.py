@@ -12,23 +12,17 @@ images_bp = Blueprint('images', __name__)
 @jwt_required()
 def upload_image():
     user_id = get_jwt_identity()
-    print(f"User ID: {user_id}")
     
     # Check if user exists
     user = User.query.get(user_id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
     
-    # Debug request
-    print("Files in request:", request.files)
-    print("Form data:", request.form)
-    
     # Check if file is in request
     if 'image' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     
     file = request.files['image']
-    print(f"File received: {file.filename}, Content-Type: {file.content_type}")
     
     # Check if file is empty
     if file.filename == '':
@@ -69,7 +63,6 @@ def upload_image():
             'image': image.to_dict()
         }), 201
     except Exception as e:
-        print(f"Error uploading image: {str(e)}")
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
@@ -78,7 +71,6 @@ def upload_image():
 def get_images():
     user_id = get_jwt_identity()
     
-    print(f"User ID, get_images: {user_id}")
     # Get all images for the user
     images = Image.query.filter_by(user_id=user_id).order_by(Image.uploaded_at.desc()).all()
     

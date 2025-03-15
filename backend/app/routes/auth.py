@@ -66,11 +66,8 @@ def login():
 @auth_bp.route('/me', methods=['GET'])
 @jwt_required()
 def get_current_user():
-    # Add more debugging
-    print("Headers:", request.headers)
     try:
         user_id = get_jwt_identity()
-        print(f"User ID: {user_id}")
         user = User.query.get(user_id)
         
         if not user:
@@ -78,5 +75,4 @@ def get_current_user():
         
         return jsonify(user.to_dict()), 200
     except Exception as e:
-        print(f"JWT Error: {str(e)}")
         return jsonify({'error': str(e)}), 401 

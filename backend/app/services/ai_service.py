@@ -31,7 +31,6 @@ class AIService:
             response = self.s3.get_object(Bucket=self.bucket, Key=key)
             return response['Body'].read()
         except Exception as e:
-            print(f"Error downloading from S3: {str(e)}")
             return None
 
     def download_from_url(self, url):
@@ -41,7 +40,6 @@ class AIService:
             response.raise_for_status()
             return response.content
         except Exception as e:
-            print(f"Error downloading from URL: {str(e)}")
             return None
 
     def encode_image(self, image_data):
@@ -49,7 +47,6 @@ class AIService:
         try:
             return base64.b64encode(image_data).decode("utf-8")
         except Exception as e:
-            print(f"Error encoding image: {str(e)}")
             return None
 
     def analyze_image(self, image_url, custom_prompt=None):
@@ -108,9 +105,4 @@ class AIService:
             # Extract the content from the response
             return response.choices[0].message.content
         except Exception as e:
-            print(f"Error calling OpenAI API: {str(e)}")
             return f"Error analyzing image: {str(e)}"
-
-# Example usage:
-# analyzer = ImageAnalyzer(api_key="your_openai_api_key")
-# print(analyzer.analyze_image("path/to/your/image.jpg"))
