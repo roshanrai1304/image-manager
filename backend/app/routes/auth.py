@@ -32,7 +32,7 @@ def register():
         db.session.commit()
         
         # Generate access token
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
         
         return jsonify({
             'message': 'User registered successfully',
@@ -55,7 +55,7 @@ def login():
         return jsonify({'error': 'Invalid username or password'}), 401
     
     # Generate access token
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     
     return jsonify({
         'message': 'Login successful',
@@ -68,7 +68,8 @@ def login():
 def get_current_user():
     try:
         user_id = get_jwt_identity()
-        user = User.query.get(user_id)
+        # Convert string ID back to integer if needed
+        user = User.query.get(int(user_id))
         
         if not user:
             return jsonify({'error': 'User not found'}), 404

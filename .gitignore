@@ -2,3 +2,5 @@
 test.ipynb
 __pycache__
 node_modules
+image-manager.pem
+.gitignore

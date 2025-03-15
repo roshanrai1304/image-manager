@@ -170,6 +170,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadComplete }) => {
           />
         </FileInput>
         
+        <Button type="submit" disabled={!file || isUploading}>
+          {isUploading ? 'Uploading...' : 'Upload'}
+        </Button>
         {isUploading && <ProgressBar progress={progress} />}
       </UploadForm>
     </UploadContainer>

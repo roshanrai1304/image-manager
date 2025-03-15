@@ -30,22 +30,20 @@ const Home: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [images, setImages] = useState<Image[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const navigate = useNavigate();
 
   const fetchImages = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await api.get('/images');
-      console.log('Raw response in Home:', response.data);
       
       // Check if response.data is already an array (transformed by interceptor)
       if (Array.isArray(response.data)) {
-        console.log('Images fetched successfully (transformed):', response.data);
         setImages(response.data);
       } 
       // Check if response.data.images exists and is an array
       else if (response.data && Array.isArray(response.data.images)) {
-        console.log('Images fetched successfully (original):', response.data.images);
         setImages(response.data.images);
       } 
       else {
@@ -62,13 +60,20 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const currentUser = await getCurrentUser();
-      if (!currentUser) {
+      try {
+        const currentUser = await getCurrentUser();
+        if (!currentUser) {
+          navigate('/login');
+          return;
+        }
+        setUser(currentUser);
+        fetchImages();
+      } catch (error) {
+        console.error("Auth check error:", error);
         navigate('/login');
-        return;
+      } finally {
+        setIsAuthChecking(false);
       }
-      setUser(currentUser);
-      fetchImages();
     };
     
     checkAuth();
@@ -94,6 +99,10 @@ const Home: React.FC = () => {
       )
     );
   }, []);
+
+  if (isAuthChecking) {
+    return <div>Checking authentication...</div>;
+  }
 
   if (!user) {
     return null; // Will redirect to login

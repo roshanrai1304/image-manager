@@ -108,7 +108,6 @@ const ImageAnalysis: React.FC<ImageAnalysisProps> = ({ image, onAnalysisComplete
       const response = await api.post(`/images/${image.id}/analyze`, { prompt });
       
       if (response.data && response.data.image && response.data.image.ai_description) {
-        console.log('Analysis response:', response.data.image);
         const description = response.data.image.ai_description;
         setResult(description);
         
